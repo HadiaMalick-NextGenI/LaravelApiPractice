@@ -30,9 +30,8 @@ class PostController extends Controller
     public function store(PostStoreRequest $request)
     {
         $img = $request->image;
-        $ext = $img->getClientOriginalExtension() ;
-        $imageName = time() . '.' . $ext;
-        $img->move(public_path(). '/uploads', $imageName);
+        $path = public_path(). '/uploads';
+        $imageName = $this->uploadImage($img, $path);
 
         $post = Post::create([
             'title' => $request->title,
@@ -79,9 +78,8 @@ class PostController extends Controller
             }
 
             $img = $request->image;
-            $ext = $img->getClientOriginalExtension() ;
-            $imageName = time() . '.' . $ext;
-            $img->move($path, $imageName);
+            $imageName = $this->uploadImage($img, $path);
+
         }else{
             $imageName = $post->image;
         }
@@ -113,4 +111,14 @@ class PostController extends Controller
         
         return ApiResponse::successNoData();
     }
+
+    private function uploadImage($image, $path)
+    {
+        $extension = $image->getClientOriginalExtension();
+        $imageName = time() . '.' . $extension;
+        $image->move($path, $imageName);
+
+        return $imageName;
+    }
+
 }
