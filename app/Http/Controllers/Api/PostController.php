@@ -17,11 +17,7 @@ class PostController extends Controller
     {
         $data['posts'] = Post::all();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'All Posts',
-            'data' => $data
-        ], 200);
+        return ApiResponse::success($data, "All Posts");
     }
 
     /**
