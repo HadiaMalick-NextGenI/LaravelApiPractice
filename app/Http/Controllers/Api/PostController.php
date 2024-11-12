@@ -6,7 +6,10 @@ use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+use App\Http\Resources\PostCollection;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -15,9 +18,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        $data['posts'] = Post::all();
+        $posts = Post::with('user')->get();
 
-        return ApiResponse::success($data, "All Posts");
+        $postsResource = new PostCollection($posts);
+        //$postsResource = PostResource::collection($posts);
+
+        return ApiResponse::success(data: $postsResource, message:"All Posts");
     }
 
     /**
@@ -25,6 +31,7 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
+        $user_id = Auth::user()->id;
         $img = $request->image;
         $path = public_path(). '/uploads';
         $imageName = $this->uploadImage($img, $path);
@@ -33,9 +40,13 @@ class PostController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'image' => $imageName,
+            'is_published' => $request->is_published,
+            'user_id' => $user_id,
         ]);
 
-        return ApiResponse::success(data: $post, code: 201, message:"Post created successfully!");
+        $postResource = new PostResource($post);
+
+        return ApiResponse::success( data: $postResource , code: 201, message:"Post created successfully!");
     }
 
     /**
@@ -49,7 +60,9 @@ class PostController extends Controller
             return ApiResponse::error('Post not found',404);
         }
 
-        return ApiResponse::success(data: $post);
+        $postResource = new PostResource($post);
+
+        return ApiResponse::success(data: $postResource);
     }
 
     /**
@@ -57,6 +70,7 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, string $id)
     {
+        $user_id = Auth::user()->id;
         $post = Post::find($id);
 
         if(!$post){
@@ -84,9 +98,13 @@ class PostController extends Controller
             'title' => $request->title ?? $post->title,
             'description' => $request->description ?? $post->description,
             'image' => $imageName,
+            'is_published' =>$request->is_published ?? $post->is_published,
+            'user_id' => $user_id
         ]);
 
-        return ApiResponse::success(data: $post, message: "Post updated successfully!");
+        $postResource = new PostResource($post);
+
+        return ApiResponse::success(data: $postResource, message: "Post updated successfully!");
     }
 
     /**
