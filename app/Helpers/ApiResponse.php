@@ -3,8 +3,8 @@
 namespace App\Helpers;
 
 class ApiResponse{
-    public static function success($data, $message = "", $metadata = [], $links = [], 
-    $code = 200, $token = null, $token_type = null){
+    public static function success($data, $code = 200, $message = "", $metadata = [], $links = [], $token = null, $token_type = null){
+
         $response = [
             'status' => 'success',
             'data' => $data,
@@ -16,7 +16,8 @@ class ApiResponse{
             $response['token'] = $token;
             $response['token_type'] = $token_type;
         }
-        return response()->json($response, $code);
+
+        return response()->json(data: $response, status: $code);
     }
 
     public static function successNoData(){
@@ -24,11 +25,11 @@ class ApiResponse{
         $response = [
             'status' => 'success',
         ];
-        return response()->json($response, $code);
+        return response()->json(data: $response, status: $code);
     }
 
     public static function error($message, $code = 400, $details = []){
-        return response()->json([
+        return response()->json(data: [
             'status' => 'error',
             'error' => [
                 'code' => $code,
@@ -36,6 +37,6 @@ class ApiResponse{
                 'details' => $details
             ],
             'metadata' => ['timestamp' => now(),]
-        ], $code);
+        ], status: $code);
     }
 }
