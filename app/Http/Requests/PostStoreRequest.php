@@ -27,7 +27,8 @@ class PostStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required',
-            'image' => 'required|mimes:png,jpg,jpeg,gif'
+            'image' => 'required|mimes:png,jpg,jpeg,gif',
+            'is_published' => 'required|boolean'
         ];
     }
 
@@ -38,7 +39,9 @@ class PostStoreRequest extends FormRequest
             'title.max' => 'Title should be less than 255 characters',
             'description.required' => 'Description is required',
             'image.required' => 'Image is required',
-            'image.mimes' => 'Image must be in png,jpg,jpeg,gif format'
+            'image.mimes' => 'Image must be in png,jpg,jpeg,gif format',
+            'is_published.required' => 'Is_published is required',
+            'is_published.boolean' => 'is_published should be boolean'
         ];
     }
 
