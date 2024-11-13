@@ -7,14 +7,14 @@
     },
     "paths": {
         "/": {},
-        "/api/signup": {
+        "/api/auth/signup": {
             "post": {
                 "tags": [
                     "Authentication"
                 ],
                 "summary": "User Signup",
-                "description": "Registers a new user",
-                "operationId": "f886d970a4e3497817841e1dc8ca2348",
+                "description": "Register a new user in the system",
+                "operationId": "25b0603e5c64f3375576adc22300d89d",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -32,10 +32,12 @@
                                     },
                                     "email": {
                                         "type": "string",
+                                        "format": "email",
                                         "example": "johndoe@example.com"
                                     },
                                     "password": {
                                         "type": "string",
+                                        "format": "password",
                                         "example": "password123"
                                     }
                                 },
@@ -46,10 +48,47 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "User created successfully"
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration successful!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Bad Request"
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The provided data is invalid."
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -88,10 +127,67 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login successful, returns user data and token"
+                        "description": "Login successful, returns user data and token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResource"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid request data"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -106,10 +202,44 @@
                 "operationId": "ad65cbbd4e9f201619eae184a5961a98",
                 "responses": {
                     "204": {
-                        "description": "Logout successful"
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User logged out successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 204
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -124,22 +254,57 @@
                 "tags": [
                     "Posts"
                 ],
-                "summary": "Get list of posts",
-                "description": "Returns list of posts",
+                "summary": "Get all posts",
+                "description": "Retrieve a list of all posts with associated user details",
                 "operationId": "3fda362e2e082b5357ac416e7767e435",
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "A list of posts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PostResource"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All Posts"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "401": {
-                        "description": "Unauthorized"
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while retrieving posts"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -198,43 +363,7 @@
                                             "example": "Post created successfully!"
                                         },
                                         "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "My First Post"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "This is the description of my first post."
-                                                },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "uploads/image.png"
-                                                },
-                                                "is_published": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "user_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-11-12T10:30:00"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-11-12T10:30:00"
-                                                }
-                                            },
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/PostResource"
                                         }
                                     },
                                     "type": "object"
@@ -315,31 +444,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "title": {
-                                            "type": "string",
-                                            "example": "Sample Title"
-                                        },
-                                        "content": {
-                                            "type": "string",
-                                            "example": "This is a sample post content."
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2023-11-12T00:00:00Z"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2023-11-12T00:00:00Z"
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PostResource"
                                 }
                             }
                         }
@@ -429,56 +534,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "title": {
-                                                    "type": "string",
-                                                    "example": "Updated Title"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Updated description of the post."
-                                                },
-                                                "image": {
-                                                    "type": "string",
-                                                    "example": "image.jpg"
-                                                },
-                                                "is_published": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2023-11-12T00:00:00Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2023-11-12T00:00:00Z"
-                                                },
-                                                "user_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Post updated successfully!"
-                                        },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 200
-                                        }
-                                    },
-                                    "type": "object"
+                                    "$ref": "#/components/schemas/PostResource"
                                 }
                             }
                         }
@@ -578,6 +634,85 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "UserResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "johndoe@example.com"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T10:30:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T10:30:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "My Blog"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "This is the description of the post."
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "image.jpg"
+                    },
+                    "is_published": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T00:00:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T00:00:00"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "in": "header",
+                "scheme": "bearer",
+                "description": "Enter your Bearer token"
+            }
+        }
+    },
     "tags": [
         {
             "name": "Authentication",
@@ -587,15 +722,5 @@
             "name": "Posts",
             "description": "Posts"
         }
-    ],
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "in": "header",
-                "scheme": "bearer",
-                "description": "Enter your Bearer token"
-            }
-        }
-    }
+    ]
 }

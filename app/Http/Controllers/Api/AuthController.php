@@ -12,27 +12,60 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Schema(
+ *     schema="UserResource",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="name", type="string", example="John Doe"),
+ *     @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T10:30:00Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T10:30:00Z")
+ * )
+ */
+
 class AuthController extends Controller
 {
     /**
-     *  @OA\Post(
-     *     path="/api/signup",
+     * @OA\Post(
+     *     path="/api/auth/signup",
      *     summary="User Signup",
-     *     description="Registers a new user",
+     *     description="Register a new user in the system",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
+     *             type="object",
      *             required={"name", "email", "password"},
      *             @OA\Property(property="name", type="string", example="John Doe"),
-     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
-     *             @OA\Property(property="password", type="string", example="password123")
+     *             @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
      *         )
      *     ),
-     *     @OA\Response(response=201, description="User created successfully"),
-     *     @OA\Response(response=400, description="Bad Request")
+     *     @OA\Response(
+     *         response=201,
+     *         description="Registration successful",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Registration successful!"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/UserResource"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="The provided data is invalid."),
+     *             @OA\Property(property="status", type="integer", example=400)
+     *         )
+     *     )
      * )
-    */
+     */
     public function signup(UserRegistrationRequest $request){
 
         $data = [
@@ -63,12 +96,33 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Login successful, returns user data and token"
+     *         description="Login successful, returns user data and token",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Login successful!"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 ref="#/components/schemas/UserResource"
+     *             ),
+     *         ),
      *     ),
      *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     )
+     *          response=400,
+     *          description="Bad request",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Invalid request data")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized",
+     *      @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Unauthorized")
+     *          )
+     *      ),
      * )
     */
     public function login(UserLoginRequest $request){
@@ -98,12 +152,29 @@ class AuthController extends Controller
      *     security={{ "bearerAuth": {} }},
      *     @OA\Response(
      *         response=204,
-     *         description="Logout successful"
+     *         description="Logout successful",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="User logged out successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 example=204
+     *             ),
+     *         ),
      *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized"
-     *     )
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized",
+     *      @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Unauthorized")
+     *          )
+     *      ),
      * )
      */
     public function logout(Request $request){

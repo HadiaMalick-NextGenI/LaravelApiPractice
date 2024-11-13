@@ -11,18 +11,52 @@ use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @OA\Schema(
+ *     schema="PostResource",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="title", type="string", example="My Blog"),
+ *     @OA\Property(property="description", type="string", example="This is the description of the post."),
+ *     @OA\Property(property="image", type="string", example="image.jpg"),
+ *     @OA\Property(property="is_published", type="boolean", example=true),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T00:00:00"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00"),
+ *     @OA\Property(property="user_id", type="integer", example=1)
+ * )
+ */
+
 class PostController extends Controller
 {
-    //Documented in Swagger using annotations to describe the endpoint, request parameters, and the response.
     /**
      * @OA\Get(
      *     path="/api/posts",
+     *     summary="Get all posts",
+     *     description="Retrieve a list of all posts with associated user details",
      *     tags={"Posts"},
-     *     security={{ "bearerAuth": {} }},
-     *     summary="Get list of posts",
-     *     description="Returns list of posts",
-     *     @OA\Response(response=200, description="Success"),
-     *     @OA\Response(response=401, description="Unauthorized")
+     *     @OA\Response(
+     *         response=200,
+     *         description="A list of posts",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/PostResource")
+     *             ),
+     *             @OA\Property(property="message", type="string", example="All Posts"),
+     *             @OA\Property(property="status", type="integer", example=200)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="An error occurred while retrieving posts"),
+     *             @OA\Property(property="status", type="integer", example=500)
+     *         )
+     *     )
      * )
      * Display a listing of the resource.
      */
@@ -59,17 +93,9 @@ class PostController extends Controller
      *             @OA\Property(property="message", type="string", example="Post created successfully!"),
      *             @OA\Property(
      *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="My First Post"),
-     *                 @OA\Property(property="description", type="string", example="This is the description of my first post."),
-     *                 @OA\Property(property="image", type="string", example="uploads/image.png"),
-     *                 @OA\Property(property="is_published", type="boolean", example=true),
-     *                 @OA\Property(property="user_id", type="integer", example=1),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-11-12T10:30:00"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-11-12T10:30:00")
-     *              )
-     *         )
+     *                 ref="#/components/schemas/PostResource"
+     *                 ),
+     *          ),
      *     ),
      *      @OA\Response(
      *          response=400,
@@ -128,13 +154,8 @@ class PostController extends Controller
      *         response=200,
      *         description="Successful response",
      *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="title", type="string", example="Sample Title"),
-     *             @OA\Property(property="content", type="string", example="This is a sample post content."),
-     *             @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
-     *             @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00Z")
-     *         )
+     *             ref = "#/components/schemas/PostResource"
+     *         ),
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -198,17 +219,7 @@ class PostController extends Controller
      *         response=200,
      *         description="Post successfully updated",
      *         @OA\JsonContent(
-     *             type="object",
-     *              @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="Updated Title"),
-     *                 @OA\Property(property="description", type="string", example="Updated description of the post."),
-     *                 @OA\Property(property="image", type="string", example="image.jpg"),
-     *                 @OA\Property(property="is_published", type="boolean", example=true),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
-     *                 @OA\Property(property="user_id", type="integer", example=1)
-     *             ),
+     *             ref = "#/components/schemas/PostResource",
      *             @OA\Property(property="message", type="string", example="Post updated successfully!"),
      *             @OA\Property(property="status", type="integer", example=200)
      *         )
