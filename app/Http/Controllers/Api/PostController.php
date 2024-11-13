@@ -13,7 +13,17 @@ use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+    //Documented in Swagger using annotations to describe the endpoint, request parameters, and the response.
     /**
+     * @OA\Get(
+     *     path="/api/posts",
+     *     tags={"Posts"},
+     *     security={{ "bearerAuth": {} }},
+     *     summary="Get list of posts",
+     *     description="Returns list of posts",
+     *     @OA\Response(response=200, description="Success"),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
      * Display a listing of the resource.
      */
     public function index()
@@ -21,12 +31,63 @@ class PostController extends Controller
         $posts = Post::with('user')->get();
 
         $postsResource = new PostCollection($posts);
-        //$postsResource = PostResource::collection($posts);
 
         return ApiResponse::success(data: $postsResource, message:"All Posts");
     }
 
     /**
+     * @OA\Post(
+     *      path="/api/posts",
+     *      tags={"Posts"},
+     *      security={{ "bearerAuth": {} }},
+     *      summary="Create a new post",
+     *      @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"title", "description", "image", "is_published"},
+     *              @OA\Property(property="description", type="string", example="My Post"),
+     *              @OA\Property(property="title", type="string", example="This is the description of my post"),
+     *              @OA\Property(property="image", type="string", format="binary", example="image.png"),
+     *              @OA\Property(property="is_published", type="boolean", example=true)
+     *          )
+     *      ),
+     *     @OA\Response(
+     *              response=201,
+     *         description="Post created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Post created successfully!"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="My First Post"),
+     *                 @OA\Property(property="description", type="string", example="This is the description of my first post."),
+     *                 @OA\Property(property="image", type="string", example="uploads/image.png"),
+     *                 @OA\Property(property="is_published", type="boolean", example=true),
+     *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-11-12T10:30:00"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-11-12T10:30:00")
+     *              )
+     *         )
+     *     ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad request",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Invalid request data")
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized",
+     *      @OA\JsonContent(
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="message", type="string", example="Unauthorized")
+     *          )
+     *      ),
+     * )
      * Store a newly created resource in storage.
      */
     public function store(PostStoreRequest $request)
@@ -50,13 +111,54 @@ class PostController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/api/posts/{id}",
+     *     summary="Get a single post",
+     *     description="Retrieve a post by its ID",
+     *     tags={"Posts"},
+     *     security={{ "bearerAuth": {} }},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the post",
+     *         @OA\Schema( type="integer" )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="title", type="string", example="Sample Title"),
+     *             @OA\Property(property="content", type="string", example="This is a sample post content."),
+     *             @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00Z")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post not found"
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 example=404
+     *             )
+     *         )
+     *     )
+     * )
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Post $post)
     {
-        $post = Post::find($id);
-
-        if(!$post){
+        if(!$post->id){
             return ApiResponse::error('Post not found',404);
         }
 
@@ -66,14 +168,68 @@ class PostController extends Controller
     }
 
     /**
+     * @OA\Put(
+     *     path="/api/posts/{id}",
+     *     summary="Update a post",
+     *     description="Update an existing post by its ID",
+     *     tags={"Posts"},
+     *     security={{ "bearerAuth": {} }},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the post",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"title", "description", "is_published"},
+     *             @OA\Property(property="title", type="string", example="Updated Title"),
+     *             @OA\Property(property="description", type="string", example="Updated description of the post."),
+     *             @OA\Property(property="image", type="string", format="binary", description="New image file for the post"),
+     *             @OA\Property(property="is_published", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Post successfully updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *              @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Updated Title"),
+     *                 @OA\Property(property="description", type="string", example="Updated description of the post."),
+     *                 @OA\Property(property="image", type="string", example="image.jpg"),
+     *                 @OA\Property(property="is_published", type="boolean", example=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00Z"),
+     *                 @OA\Property(property="user_id", type="integer", example=1)
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Post updated successfully!"),
+     *             @OA\Property(property="status", type="integer", example=200)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Post not found"),
+     *             @OA\Property(property="status", type="integer", example=404)
+     *         )
+     *     )
+     * )
      * Update the specified resource in storage.
      */
-    public function update(PostUpdateRequest $request, string $id)
+    public function update(PostUpdateRequest $request, Post $post)
     {
         $user_id = Auth::user()->id;
-        $post = Post::find($id);
 
-        if(!$post){
+        if(!$post->id){
             return ApiResponse::error('Post not found',404);
         }
 
@@ -108,13 +264,61 @@ class PostController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *     path="/api/posts/{id}",
+     *     summary="Delete a post",
+     *     description="Delete a post by its ID",
+     *     security = {{ "bearerAuth": {} }},
+     *     tags={"Posts"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the post",
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Post successfully deleted",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post deleted successfully"
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 example=204
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Post not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Post not found"
+     *             ),
+     *             @OA\Property(
+     *                 property="status",
+     *                 type="integer",
+     *                 example=404
+     *             )
+     *         )
+     *     )
+     * )
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        $post = Post::find($id);
-        
-        if(!$post){
+        if(!$post->id){
             return ApiResponse::error('Post not found',404);
         }
 
