@@ -1,26 +1,30 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V2;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\V2\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 /**
  * @OA\Schema(
- *     schema="UserResource",
+ *     schema="UserResourceV2",
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="John Doe"),
  *     @OA\Property(property="email", type="string", format="email", example="johndoe@example.com"),
- *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T10:30:00Z"),
- *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T10:30:00Z")
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2023-11-12T10:30:00"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T10:30:00")
+ * )
+ * 
+ * @OA\Tag(
+ *     name="V2 Authentication",
+ *     description="Endpoints for user authentication in version 2 of the API"
  * )
  */
 
@@ -28,10 +32,10 @@ class AuthController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/api/auth/signup",
+     *     path="/api/v2/auth/signup",
      *     summary="User Signup",
      *     description="Register a new user in the system",
-     *     tags={"Authentication"},
+     *     tags={"V2 Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -51,8 +55,10 @@ class AuthController extends Controller
      *             @OA\Property(property="message", type="string", example="Registration successful!"),
      *             @OA\Property(
      *                 property="data",
-     *                 ref="#/components/schemas/UserResource"
-     *             )
+     *                 ref="#/components/schemas/UserResourceV2"
+     *             ),
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *             @OA\Property(property="token_type", type="string", example="Bearer")
      *         )
      *     ),
      *     @OA\Response(
@@ -76,16 +82,24 @@ class AuthController extends Controller
         
         $user = User::create($data);
 
+        $registrationToken = $user->createToken('registration_token', ['registration']);
+
         $userResource = new UserResource($user);
-        return ApiResponse::success(data: $userResource, code: 201, message:"Registration successful!");
+        return ApiResponse::success(
+            data: $userResource, 
+            code: 201, 
+            message:"Registration successful!",
+            token: $registrationToken,
+            token_type: 'bearer',
+        );
     }
 
     /**
      * @OA\Post(
-     *     path="/api/login",
+     *     path="/api/v2/login",
      *     summary="User Login",
      *     description="Logs in an existing user and returns a token",
-     *     tags={"Authentication"},
+     *     tags={"V2 Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -103,8 +117,10 @@ class AuthController extends Controller
      *             @OA\Property(property="message", type="string", example="Login successful!"),
      *             @OA\Property(
      *                 property="data",
-     *                 ref="#/components/schemas/UserResource"
+     *                 ref="#/components/schemas/UserResourceV2"
      *             ),
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *             @OA\Property(property="token_type", type="string", example="Bearer")
      *         ),
      *     ),
      *     @OA\Response(
@@ -129,7 +145,7 @@ class AuthController extends Controller
 
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
             $authUser = Auth::user();
-            $token = $authUser->createToken("API Token");
+            $token = $authUser->createToken('access_token', ['access']);
 
             $userResource = new UserResource($authUser);
             return ApiResponse::success(
@@ -145,10 +161,10 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/logout",
+     *     path="/api/v2/logout",
      *     summary="User Logout",
      *     description="Logs out the current user",
-     *     tags={"Authentication"},
+     *     tags={"V2 Authentication"},
      *     security={{ "bearerAuth": {} }},
      *     @OA\Response(
      *         response=204,
@@ -183,4 +199,5 @@ class AuthController extends Controller
 
         return ApiResponse::successNoData();
     }
+
 }

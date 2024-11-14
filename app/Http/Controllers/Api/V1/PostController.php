@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
-use App\Http\Resources\PostCollection;
-use App\Http\Resources\PostResource;
+use App\Http\Resources\V1\PostCollection;
+use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * @OA\Schema(
- *     schema="PostResource",
+ *     schema="PostResourceV1",
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="title", type="string", example="My Blog"),
@@ -24,16 +24,22 @@ use Illuminate\Support\Facades\Auth;
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2023-11-12T00:00:00"),
  *     @OA\Property(property="user_id", type="integer", example=1)
  * )
+ * 
+ * @OA\Tag(
+ *     name="V1 Posts",
+ *     description="Operations for managing posts in version 1 of the API"
+ * )
  */
 
 class PostController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/posts",
+     *     path="/api/v1/posts",
      *     summary="Get all posts",
      *     description="Retrieve a list of all posts with associated user details",
-     *     tags={"Posts"},
+     *     tags={"V1 Posts"},
+     *     security={{ "bearerAuth": {} }},
      *     @OA\Response(
      *         response=200,
      *         description="A list of posts",
@@ -42,7 +48,7 @@ class PostController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/PostResource")
+     *                 @OA\Items(ref="#/components/schemas/PostResourceV1")
      *             ),
      *             @OA\Property(property="message", type="string", example="All Posts"),
      *             @OA\Property(property="status", type="integer", example=200)
@@ -71,8 +77,8 @@ class PostController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/api/posts",
-     *      tags={"Posts"},
+     *      path="/api/v1/posts",
+     *      tags={"V1 Posts"},
      *      security={{ "bearerAuth": {} }},
      *      summary="Create a new post",
      *      @OA\RequestBody(
@@ -93,7 +99,7 @@ class PostController extends Controller
      *             @OA\Property(property="message", type="string", example="Post created successfully!"),
      *             @OA\Property(
      *                 property="data",
-     *                 ref="#/components/schemas/PostResource"
+     *                 ref="#/components/schemas/PostResourceV1"
      *                 ),
      *          ),
      *     ),
@@ -138,10 +144,10 @@ class PostController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/posts/{id}",
+     *     path="/api/v1/posts/{id}",
      *     summary="Get a single post",
      *     description="Retrieve a post by its ID",
-     *     tags={"Posts"},
+     *     tags={"V1 Posts"},
      *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="id",
@@ -154,7 +160,7 @@ class PostController extends Controller
      *         response=200,
      *         description="Successful response",
      *         @OA\JsonContent(
-     *             ref = "#/components/schemas/PostResource"
+     *             ref = "#/components/schemas/PostResourceV1"
      *         ),
      *     ),
      *     @OA\Response(
@@ -190,10 +196,10 @@ class PostController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/posts/{id}",
+     *     path="/api/v1/posts/{id}",
      *     summary="Update a post",
      *     description="Update an existing post by its ID",
-     *     tags={"Posts"},
+     *     tags={"V1 Posts"},
      *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="id",
@@ -219,7 +225,7 @@ class PostController extends Controller
      *         response=200,
      *         description="Post successfully updated",
      *         @OA\JsonContent(
-     *             ref = "#/components/schemas/PostResource",
+     *             ref = "#/components/schemas/PostResourceV1",
      *             @OA\Property(property="message", type="string", example="Post updated successfully!"),
      *             @OA\Property(property="status", type="integer", example=200)
      *         )
@@ -276,11 +282,11 @@ class PostController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/posts/{id}",
+     *     path="/api/v1/posts/{id}",
      *     summary="Delete a post",
      *     description="Delete a post by its ID",
      *     security = {{ "bearerAuth": {} }},
-     *     tags={"Posts"},
+     *     tags={"V1 Posts"},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

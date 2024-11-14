@@ -7,14 +7,14 @@
     },
     "paths": {
         "/": {},
-        "/api/auth/signup": {
+        "/api/v1/auth/signup": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "V1 Authentication"
                 ],
                 "summary": "User Signup",
                 "description": "Register a new user in the system",
-                "operationId": "25b0603e5c64f3375576adc22300d89d",
+                "operationId": "1bbf904f1386d25975cb4070d396698f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -62,7 +62,15 @@
                                             "example": "Registration successful!"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/UserResource"
+                                            "$ref": "#/components/schemas/UserResourceV1"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
                                         }
                                     },
                                     "type": "object"
@@ -93,14 +101,14 @@
                 }
             }
         },
-        "/api/login": {
+        "/api/v1/login": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "V1 Authentication"
                 ],
                 "summary": "User Login",
                 "description": "Logs in an existing user and returns a token",
-                "operationId": "222b2625838e3c57e017987f73598fda",
+                "operationId": "bae68d1c55329ecb6e41f48285840c8f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -141,7 +149,15 @@
                                             "example": "Login successful!"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/UserResource"
+                                            "$ref": "#/components/schemas/UserResourceV1"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
                                         }
                                     },
                                     "type": "object"
@@ -192,14 +208,14 @@
                 }
             }
         },
-        "/api/logout": {
+        "/api/v1/logout": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "V1 Authentication"
                 ],
                 "summary": "User Logout",
                 "description": "Logs out the current user",
-                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "operationId": "c5cdd87fdbf9d0f95dede875bd023dec",
                 "responses": {
                     "204": {
                         "description": "Logout successful",
@@ -249,14 +265,14 @@
                 ]
             }
         },
-        "/api/posts": {
+        "/api/v1/posts": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "V1 Posts"
                 ],
                 "summary": "Get all posts",
                 "description": "Retrieve a list of all posts with associated user details",
-                "operationId": "3fda362e2e082b5357ac416e7767e435",
+                "operationId": "7b253f6aade6833019f938c1f2ef08ed",
                 "responses": {
                     "200": {
                         "description": "A list of posts",
@@ -267,7 +283,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/PostResource"
+                                                "$ref": "#/components/schemas/PostResourceV1"
                                             }
                                         },
                                         "message": {
@@ -304,14 +320,19 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
-                    "Posts"
+                    "V1 Posts"
                 ],
                 "summary": "Create a new post",
-                "operationId": "dcb66200c3132996151884ac232cf439",
+                "operationId": "b996500c6caf55100cd024d3e3b49dd5",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -363,7 +384,7 @@
                                             "example": "Post created successfully!"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/PostResource"
+                                            "$ref": "#/components/schemas/PostResourceV1"
                                         }
                                     },
                                     "type": "object"
@@ -419,14 +440,14 @@
                 ]
             }
         },
-        "/api/posts/{id}": {
+        "/api/v1/posts/{id}": {
             "get": {
                 "tags": [
-                    "Posts"
+                    "V1 Posts"
                 ],
                 "summary": "Get a single post",
                 "description": "Retrieve a post by its ID",
-                "operationId": "142b5adb0520cca80cedfe09d9298332",
+                "operationId": "db686e4ed73ae7ca2424e0a4f740c8b2",
                 "parameters": [
                     {
                         "name": "id",
@@ -444,7 +465,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PostResource"
+                                    "$ref": "#/components/schemas/PostResourceV1"
                                 }
                             }
                         }
@@ -478,11 +499,11 @@
             },
             "put": {
                 "tags": [
-                    "Posts"
+                    "V1 Posts"
                 ],
                 "summary": "Update a post",
                 "description": "Update an existing post by its ID",
-                "operationId": "650f4bed0846d9350903d8a17c7b503a",
+                "operationId": "98c3c32a86125c864caa21999f234493",
                 "parameters": [
                     {
                         "name": "id",
@@ -534,7 +555,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PostResource"
+                                    "$ref": "#/components/schemas/PostResourceV1"
                                 }
                             }
                         }
@@ -568,11 +589,11 @@
             },
             "delete": {
                 "tags": [
-                    "Posts"
+                    "V1 Posts"
                 ],
                 "summary": "Delete a post",
                 "description": "Delete a post by its ID",
-                "operationId": "9d99f2e42af2f722a058a86245aa856f",
+                "operationId": "82927d2153173c1a7d6ab1e9d52ff56e",
                 "parameters": [
                     {
                         "name": "id",
@@ -632,11 +653,802 @@
                     }
                 ]
             }
+        },
+        "/api/v1/profile": {
+            "post": {
+                "tags": [
+                    "V1 Profile"
+                ],
+                "summary": "Insert Profile Data",
+                "description": "Insert or update profile data for the authenticated user",
+                "operationId": "5f886b7d28236b2366f167f808764555",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "bio": {
+                                        "type": "string",
+                                        "example": "This is a sample bio."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile data inserted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile data inserted successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResourceV1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized for this action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/auth/signup": {
+            "post": {
+                "tags": [
+                    "V2 Authentication"
+                ],
+                "summary": "User Signup",
+                "description": "Register a new user in the system",
+                "operationId": "133273b79ef36547680ac58a2337fe8e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registration successful!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResourceV2"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The provided data is invalid."
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/login": {
+            "post": {
+                "tags": [
+                    "V2 Authentication"
+                ],
+                "summary": "User Login",
+                "description": "Logs in an existing user and returns a token",
+                "operationId": "0715f3aeff0551ab2e1e64a9f20d014e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful, returns user data and token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResourceV2"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid request data"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/logout": {
+            "post": {
+                "tags": [
+                    "V2 Authentication"
+                ],
+                "summary": "User Logout",
+                "description": "Logs out the current user",
+                "operationId": "92b6fd4ad0fd99e24930a6e7c0ec6191",
+                "responses": {
+                    "204": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User logged out successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 204
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/posts": {
+            "get": {
+                "tags": [
+                    "V2 Posts"
+                ],
+                "summary": "Get all posts",
+                "description": "Retrieve a list of all posts with associated user details",
+                "operationId": "918a685d984c7778c9ddae97989c0e8e",
+                "responses": {
+                    "200": {
+                        "description": "A list of posts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PostResourceV2"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "All Posts"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred while retrieving posts"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "V2 Posts"
+                ],
+                "summary": "Create a new post",
+                "operationId": "a9cebb1b9eafab1e2657b6849823f1ed",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "image",
+                                    "is_published"
+                                ],
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "example": "My Post"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "This is the description of my post"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "example": "image.png"
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Post created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post created successfully!"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PostResourceV2"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid request data"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/posts/{id}": {
+            "get": {
+                "tags": [
+                    "V2 Posts"
+                ],
+                "summary": "Get a single post",
+                "description": "Retrieve a post by its ID",
+                "operationId": "716b5b78426650fd4c42e67979efc032",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResourceV2"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "V2 Posts"
+                ],
+                "summary": "Update a post",
+                "description": "Update an existing post by its ID",
+                "operationId": "57a4ade8eccfb2a8aa812182bfc7c25f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "is_published"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Title"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description of the post."
+                                    },
+                                    "image": {
+                                        "description": "New image file for the post",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Post successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResourceV2"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "V2 Posts"
+                ],
+                "summary": "Delete a post",
+                "description": "Delete a post by its ID",
+                "operationId": "06520b195d128f63ce4f233a562b3713",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Post successfully deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post deleted successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 204
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Post not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v2/profile": {
+            "post": {
+                "tags": [
+                    "V2 Profile"
+                ],
+                "summary": "Insert Profile Data",
+                "description": "Insert or update profile data for the authenticated user",
+                "operationId": "4af336c92675c11414e5f06065249c31",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "bio": {
+                                        "type": "string",
+                                        "example": "This is a sample bio."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile data inserted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Profile data inserted successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/UserResourceV2"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized for this action"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
-            "UserResource": {
+            "UserResourceV1": {
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -664,7 +1476,74 @@
                 },
                 "type": "object"
             },
-            "PostResource": {
+            "PostResourceV1": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "My Blog"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "This is the description of the post."
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "image.jpg"
+                    },
+                    "is_published": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T00:00:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T00:00:00"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "UserResourceV2": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "johndoe@example.com"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T10:30:00"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-11-12T10:30:00"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResourceV2": {
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -715,12 +1594,28 @@
     },
     "tags": [
         {
-            "name": "Authentication",
-            "description": "Authentication"
+            "name": "V1 Authentication",
+            "description": "Endpoints for user authentication in version 1 of the API"
         },
         {
-            "name": "Posts",
-            "description": "Posts"
+            "name": "V1 Posts",
+            "description": "Operations for managing posts in version 1 of the API"
+        },
+        {
+            "name": "V1 Profile",
+            "description": "Endpoints for managing user profiles in version 1 of the API"
+        },
+        {
+            "name": "V2 Authentication",
+            "description": "Endpoints for user authentication in version 2 of the API"
+        },
+        {
+            "name": "V2 Posts",
+            "description": "Operations for managing posts in version 2 of the API"
+        },
+        {
+            "name": "V2 Profile",
+            "description": "Endpoints for managing user profiles in version 2 of the API"
         }
     ]
 }
