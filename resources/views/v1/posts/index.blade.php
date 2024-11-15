@@ -1,38 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posts</title>
+@extends('layouts.app')
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    @vite('resources/js/app.js')
-</head>
-<body>
-    <div id="posts-container">
-        <!-- Posts will be displayed here -->
-    </div>
+@section('title', 'Posts')
+@section('content')
 
-    <script>
-        // const token = @json($token);
+<div id="posts-container" class="row">
+    <!-- Posts will be displayed here in a grid format -->
+</div>
 
-        // axios.defaults.headers.common['Authorization'] = token;
+<script>
+    const fetchPosts = async () => {
+        const token = '2|rXZwREoYl1eHRw6w95oZ1sqGSfYRdTLa0WOegQTKea363c59';
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/v2/posts', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            return response.data.data.data; 
+        } catch (error) {
+            console.error("There was an error fetching posts:", error);
+            return []; 
+        }
+    };
 
-        const loadPosts = async () => {
-            const posts = await fetchPosts(); 
-            const postsContainer = document.getElementById('posts-container');
+    const loadPosts = async () => {
+        const posts = await fetchPosts(); 
+        const postsContainer = document.getElementById('posts-container');
 
+        if (Array.isArray(posts)) {
             posts.forEach(post => {
                 const postElement = document.createElement('div');
+                postElement.classList.add('col-md-4', 'mb-4');
+                
                 postElement.innerHTML = `
-                    <h3>${post.title}</h3>
-                    <p>${post.body}</p>
+                    <div class="card">
+                        <img src="/uploads/${post.image}" class="card-img-top" alt="${post.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${post.title}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">By ${post.author.name}</h6>
+                            <p class="card-text">${post.description}</p>
+                        </div>
+                    </div>
                 `;
                 postsContainer.appendChild(postElement);
             });
-        };
+        } else {
+            console.error("Expected posts to be an array, but got:", posts);
+        }
+    };
 
-        loadPosts();
-    </script>
-</body>
-</html>
+    loadPosts();
+</script>
+
+@endsection
