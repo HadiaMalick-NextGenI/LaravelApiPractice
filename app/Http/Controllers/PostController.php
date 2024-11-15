@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -11,9 +12,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-
-        //$token = $user->createToken('YourApp')->plainTextToken; 
+        //$user = auth()->user();
 
         $token = '3|omuvZA0abJG1XsHTMImqenlViTvc8fVfJ4MxEYNh78280d6d';
         return view('v1/posts.index', compact('token'));
@@ -24,7 +23,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('v1/posts.create');
     }
 
     /**
@@ -32,7 +31,8 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return redirect()->route('posts.index')->with('success', 'Post created successfully!');
+
     }
 
     /**
@@ -48,7 +48,8 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::find($id);
+        return view('v1.posts.edit', compact('post'));
     }
 
     /**

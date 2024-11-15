@@ -10,6 +10,7 @@ use App\Http\Resources\V2\PostCollection;
 use App\Http\Resources\V2\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 /**
  * @OA\Schema(
@@ -243,6 +244,9 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
+        //dd("anything");
+        //dd($request->all());
+        // dd($post);
         $user_id = Auth::user()->id;
 
         if(!$post->id){
