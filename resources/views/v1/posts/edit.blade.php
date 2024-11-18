@@ -58,6 +58,14 @@
 </div>
 
 <script>
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+
     document.getElementById('edit-post-form').addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -65,39 +73,21 @@
         const title = document.getElementById('title').value;
         const description = document.getElementById('description').value;
         const isPublished = document.getElementById('is_published').checked ? 1 : 0;
+        //const image = document.getElementById('image').files[0];
 
         const data = {
             title: title,
             description: description,
             is_published: isPublished,
+            //image: image,
         };
 
         console.log(data);
 
-        //const form = document.getElementById('edit-post-form');
-        // const formData = new FormData(form);
-        // // const formData = new FormData();
-        // const urlParts = window.location.pathname.split('/'); 
-        // const blogId = urlParts[urlParts.length - 1]; 
-        // console.log(blogId);
-        // formData.append('title', document.getElementById('title').value);
-        // formData.append('description', document.getElementById('description').value);
-
-        // console.log(document.getElementById('description').value);
-        
-        // const imageFile = document.getElementById('image').files[0];
-        // if (imageFile) formData.append('image', imageFile);
-
-        // const isPublished = document.getElementById('is_published').checked ? 1 : 0;
-        // formData.append('is_published', isPublished);
-
-        const token = '2|rXZwREoYl1eHRw6w95oZ1sqGSfYRdTLa0WOegQTKea363c59';
-        // for (let [key, value] of formData.entries()) {
-        //     console.log(`${key}: ${value}`);
-        // }
         try {
+            const token = getCookie('authToken');
             console.log("inside try catch");
-            const response = await axios.put(`http://127.0.0.1:8000/api/v2/posts/${blogId}`, data, {
+            const response = await axios.put(`http://127.0.0.1:8000/api/v1/posts/${blogId}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     //'Content-Type': 'multipart/form-data',
@@ -107,7 +97,7 @@
 
             if (response.status === 200) {
                 alert('Post updated successfully!');
-                //window.location.href = '/posts';
+                window.location.href = '/posts';
             }
         } catch (error) {
             console.error("Error updating post:", error);
