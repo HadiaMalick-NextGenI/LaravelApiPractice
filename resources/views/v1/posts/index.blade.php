@@ -39,8 +39,7 @@
                     }
                 });
                 alert('Post deleted successfully!');
-                loadPosts();
-                //document.getElementById(`post-${postId}`).remove(); 
+                window.location.reload();
             } catch (error) {
                 console.error("Error deleting post:", error);
                 alert('There was an error deleting the post.');
