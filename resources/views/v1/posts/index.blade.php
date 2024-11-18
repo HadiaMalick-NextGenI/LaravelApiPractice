@@ -14,11 +14,18 @@
 </div>
 
 <script>
-    const token = '2|rXZwREoYl1eHRw6w95oZ1sqGSfYRdTLa0WOegQTKea363c59';
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
 
     const fetchPosts = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/v2/posts', {
+            const token = getCookie('authToken');
+
+            const response = await axios.get('http://127.0.0.1:8000/api/v1/posts', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -33,7 +40,8 @@
     const deletePost = async (postId) => {
         if (confirm("Are you sure you want to delete this post?")) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/v2/posts/${postId}`, {
+                const token = getCookie('authToken');
+                await axios.delete(`http://127.0.0.1:8000/api/v1/posts/${postId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -55,7 +63,6 @@
             posts.forEach(post => {
                 const postElement = document.createElement('div');
                 postElement.classList.add('col-md-4', 'mb-4');
-                console.log(post.id);
                 postElement.innerHTML = `
                     <div class="card">
                         <img src="/uploads/${post.image}" class="card-img-top" alt="${post.title}">
