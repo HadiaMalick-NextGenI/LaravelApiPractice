@@ -8,7 +8,7 @@ import './bootstrap';
 //const {fetchPosts} = require('./posts/fetchPosts');
 import fetchPosts from './posts/fetchPosts';
 window.fetchPosts = fetchPosts;
-console.log('fetchPosts:', window.fetchPosts);
+//console.log('fetchPosts:', window.fetchPosts);
 
 // window.fetchPosts = async () => {
 //     const posts = await fetchPosts();
