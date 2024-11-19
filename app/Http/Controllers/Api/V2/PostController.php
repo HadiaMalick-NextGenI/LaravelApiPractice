@@ -252,9 +252,6 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
-        //dd("anything");
-        //dd($request->all());
-        // dd($post);
         $user_id = Auth::user()->id;
 
         if(!$post->id){
