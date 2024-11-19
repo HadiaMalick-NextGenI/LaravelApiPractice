@@ -27,8 +27,5 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function (){
     Route::post('logout', [AuthController::class, 'logout']);
     Route::apiResource('posts',PostController::class);
-    //Route::post('posts/{post}', [PostController::class, 'update']);
     Route::post('profile', [UserController::class, 'insertProfileData']);
 });
-
-//Route::apiResource('posts',PostController::class);
