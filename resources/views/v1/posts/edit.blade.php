@@ -70,27 +70,32 @@
         e.preventDefault();
 
         const blogId = window.location.pathname.split('/').pop();
-        const title = document.getElementById('title').value;
-        const description = document.getElementById('description').value;
-        const isPublished = document.getElementById('is_published').checked ? 1 : 0;
-        //const image = document.getElementById('image').files[0];
+        // const title = document.getElementById('title').value;
+        // const description = document.getElementById('description').value;
+        // const isPublished = document.getElementById('is_published').checked ? 1 : 0;
+        // var image = document.getElementById('image').files[0];
 
-        const data = {
-            title: title,
-            description: description,
-            is_published: isPublished,
-            //image: image,
-        };
+        // console.log(image);
+        // const data = {
+        //     title: title,
+        //     description: description,
+        //     is_published: isPublished,
+        //     image: image,
+        // };
 
-        console.log(data);
+        // console.log(data);
+
+        const formData = new FormData();
+        formData.append('file', document.getElementById('image').files[0]);
+        //console.log(image);
 
         try {
             const token = getCookie('authToken');
             console.log("inside try catch");
-            const response = await axios.put(`http://127.0.0.1:8000/api/v1/posts/${blogId}`, data, {
+            const response = await axios.post(`http://127.0.0.1:8000/api/v1/posts/${blogId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    //'Content-Type': 'multipart/form-data',
+                    'Content-Type': 'multipart/form-data',
                 },
                 //method: 'PUT',
             });

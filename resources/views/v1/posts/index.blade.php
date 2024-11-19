@@ -21,6 +21,16 @@
         return null;
     }
 
+    async function getCurrentUserId() {
+        const token = getCookie('authToken');
+        const response = await axios.get('http://127.0.0.1:8000/api/v1/user', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data.id;
+    }
+
     const fetchPosts = async () => {
         try {
             const token = getCookie('authToken');
@@ -57,6 +67,7 @@
 
     const loadPosts = async () => {
         const posts = await fetchPosts(); 
+        const userId = await getCurrentUserId();
         const postsContainer = document.getElementById('posts-container');
 
         if (Array.isArray(posts)) {
@@ -71,10 +82,11 @@
                             <h6 class="card-subtitle mb-2 text-muted">By ${post.author.name}</h6>
                             <p class="card-text">${post.description}</p>
                         </div>
+                        ${post.author.id === userId ? `
                         <div class="d-flex justify-content-between">
                             <a href="/posts/edit/${post.id}" class="btn btn-warning btn-sm">Edit</a>
                             <button onclick="deletePost(${post.id})" class="btn btn-danger btn-sm">Delete</button>
-                        </div>
+                        </div>` : ''}
                     </div>
                 `;
                 postsContainer.appendChild(postElement);

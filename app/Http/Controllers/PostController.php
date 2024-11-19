@@ -40,7 +40,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return view('v1.posts.view', ['postId' => $id]);
     }
 
     /**

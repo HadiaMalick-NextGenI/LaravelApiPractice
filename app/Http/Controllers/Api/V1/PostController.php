@@ -246,6 +246,9 @@ class PostController extends Controller
     {
         $user_id = Auth::user()->id;
 
+        dd($request->all());
+        //dd($request->file('file'));
+
         if(!$post->id){
             return ApiResponse::error('Post not found',404);
         }

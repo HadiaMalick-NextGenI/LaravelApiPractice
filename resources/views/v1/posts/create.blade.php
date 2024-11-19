@@ -75,8 +75,6 @@
     document.getElementById('create-post-form').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const userId = await getCurrentUserId();
-
         const formData = new FormData();
         formData.append('title', document.getElementById('title').value);
         formData.append('description', document.getElementById('description').value);
@@ -84,13 +82,11 @@
 
         const isPublished = document.getElementById('is_published').checked ? 1 : 0;
         formData.append('is_published', isPublished);
-        formData.append('user_id', userId);
 
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/v1/posts', formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    //'Content-Type': 'multipart/form-data',
                 }
             });
 
