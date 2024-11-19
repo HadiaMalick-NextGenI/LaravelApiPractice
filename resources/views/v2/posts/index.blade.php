@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts DataTable</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
     
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-3">
         <h1>Posts DataTable</h1>
         <table id="posts-table" class="display">
             <thead>
@@ -79,7 +80,11 @@
                     {
                         data: 'id',
                         render: function(data, type, row) {
-                            return `<button class="btn btn-danger delete-post" data-id="${data}">Delete</button>`;
+                            return `
+                            <a href="/posts/${data}" class="btn btn-primary">View</a>
+                            <a href="/posts/edit/${data}" class="btn btn-warning">Edit</a>
+                            <button class="btn btn-danger delete-post" data-id="${data}">Delete</button>
+                            `;
                         }
                     }
                 ]
