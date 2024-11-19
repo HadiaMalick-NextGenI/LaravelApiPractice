@@ -11,6 +11,7 @@ use App\Http\Resources\V2\PostResource;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 /**
  * @OA\Schema(
@@ -68,10 +69,17 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user')->get();
+        $posts = Post::with('user');
+        
+        if (request()->ajax()) {
+            return DataTables::of($posts)
+                ->addColumn('user_name', function($post) {
+                    return $post->user->name; 
+                })
+                ->make(true);
+        }
 
-        $postsResource = new PostCollection($posts);
-
+        $postsResource = new PostCollection($posts->get());
         return ApiResponse::success(data: $postsResource, message:"All Posts");
     }
 
