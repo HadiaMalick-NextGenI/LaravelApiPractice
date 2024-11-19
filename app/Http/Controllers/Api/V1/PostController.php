@@ -246,7 +246,7 @@ class PostController extends Controller
     {
         $user_id = Auth::user()->id;
 
-        dd($request->all());
+        //dd($request->all(), $request->file());
         //dd($request->file('file'));
 
         if(!$post->id){
