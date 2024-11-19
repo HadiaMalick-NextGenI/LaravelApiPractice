@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class PostController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -14,8 +16,9 @@ class PostController extends Controller
     {
         //$user = auth()->user();
 
-        $token = '3|omuvZA0abJG1XsHTMImqenlViTvc8fVfJ4MxEYNh78280d6d';
-        return view('v1/posts.index', compact('token'));
+        // return view('v1/posts.index');
+
+        return view('v2.posts.index');
     }
 
     /**
