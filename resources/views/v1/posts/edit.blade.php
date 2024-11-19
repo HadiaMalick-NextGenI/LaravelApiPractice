@@ -84,18 +84,21 @@
         // };
 
         // console.log(data);
-
-        const formData = new FormData();
-        formData.append('file', document.getElementById('image').files[0]);
         //console.log(image);
 
         try {
-            const token = getCookie('authToken');
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('image', document.getElementById('image').files[0]);
+            formData.append('_method', 'PUT');
+            const token = '9|estZhF2hRhbK8t5q2JoqNV2AwGOFoM5lQ5AjAVrn4e140f5f';
             console.log("inside try catch");
+            console.log(formData);
             const response = await axios.post(`http://127.0.0.1:8000/api/v1/posts/${blogId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data',
+                    //'Content-Type': 'multipart/form-data',
                 },
                 //method: 'PUT',
             });
