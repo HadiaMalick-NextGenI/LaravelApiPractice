@@ -13,6 +13,9 @@
 <body>
     <div class="container mt-3">
         <h1>Posts DataTable</h1>
+        <div class="mb-3">
+            <a href="/posts/create" class="btn btn-success btn-sm" id="create-post-btn">Create New Post</a>
+        </div>
         <table id="posts-table" class="display">
             <thead>
                 <tr>
@@ -40,10 +43,12 @@
 
         $(document).on('click', '.delete-post', function() {
             var postId = $(this).data('id');
-
+            var deletePostUrl = @json(route('posts.destroy', ':id'));
+            deletePostUrl = deletePostUrl.replace(':id', postId);
+            
             if (confirm("Are you sure you want to delete this post?")) {
                 $.ajax({
-                    url: '/api/v2/posts/' + postId,
+                    url: deletePostUrl,
                     type: 'DELETE',
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -59,36 +64,41 @@
             }
         });
 
-        $(document).ready(function () {
-
+        function initializePostsTable(token) {
+            var postsUrl = @json(route('posts.index'));
             $('#posts-table').DataTable({
-                processing: false,
+                processing: true,
                 serverSide: true,
                 ajax: {
-                    url: '/api/v2/posts',
+                    url: postsUrl,
                     type: 'GET',
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
                 },
                 columns: [
-                    { data: 'id', name: 'id' }, 
-                    { data: 'title', name: 'title' }, 
-                    { data: 'description', name: 'description' }, 
+                    { data: 'id', name: 'id' },
+                    { data: 'title', name: 'title' },
+                    { data: 'description', name: 'description' },
                     { data: 'user_name', name: 'user_name' },
-                    { data: 'created_at', name: 'created_at' }, 
-                    {
-                        data: 'id',
-                        render: function(data, type, row) {
-                            return `
-                            <a href="/posts/${data}" class="btn btn-primary">View</a>
-                            <a href="/posts/edit/${data}" class="btn btn-warning">Edit</a>
-                            <button class="btn btn-danger delete-post" data-id="${data}">Delete</button>
-                            `;
-                        }
+                    { data: 'created_at', name: 'created_at' },
+                    { 
+                        data: 'actions', 
+                        name: 'actions',
+                        orderable: false,
+                        searchable: false 
                     }
-                ]
+                ],
+                language: {
+                    searchPlaceholder: 'Search posts...',
+                    emptyTable: 'No posts available at the moment.'
+                }
             });
+        }
+
+        $(document).ready(function () {
+            initializePostsTable(token);
+            console.log(document.getElementById('create-post-btn').href);
         });
     </script>
 </body>

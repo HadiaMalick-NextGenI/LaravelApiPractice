@@ -74,13 +74,32 @@ class PostController extends Controller
         if (request()->ajax()) {
             return DataTables::of($posts)
                 ->addColumn('user_name', function($post) {
-                    return $post->user->name; 
+                    return $post->user->name;
                 })
-                ->make(true);
+                ->addColumn('actions', function($post) {
+                    $isOwner = $post->user_id === auth()->id();
+                    $viewButton = view('components.buttons.view', ['url' => "/posts/{$post->id}"])->render();
+                    
+                    $editUrl = url("/posts/edit/{$post->id}");
+                    logger('Generated Edit URL: ' . $editUrl);
+
+                    $editButton = view('components.buttons.edit', [
+                        'url' => $editUrl,
+                        'isOwner' => $isOwner,
+                    ])->render();
+                    $deleteButton = view('components.buttons.delete', [
+                        'postId' => $post->id,
+                        'isOwner' => $isOwner,
+                    ])->render();
+
+                    return $viewButton . ' ' . $editButton . ' ' . $deleteButton;
+                })
+                ->rawColumns(['actions'])
+                ->toJson();
         }
 
         $postsResource = new PostCollection($posts->get());
-        return ApiResponse::success(data: $postsResource, message:"All Posts");
+        return ApiResponse::success(data: $postsResource, message: "All Posts");
     }
 
     /**
@@ -346,6 +365,10 @@ class PostController extends Controller
         if(!$post->id){
             return ApiResponse::error('Post not found',404);
         }
+
+        if ($post->user_id !== auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }    
 
         $imgPath = public_path(). '/uploads/'. $post->image;
         unlink($imgPath);
