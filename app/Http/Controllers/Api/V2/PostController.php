@@ -81,7 +81,6 @@ class PostController extends Controller
                     $viewButton = view('components.buttons.view', ['url' => "/posts/{$post->id}"])->render();
                     
                     $editUrl = url("/posts/edit/{$post->id}");
-                    logger('Generated Edit URL: ' . $editUrl);
 
                     $editButton = view('components.buttons.edit', [
                         'url' => $editUrl,
