@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Resources\V1\UserResource;
+use App\Jobs\SendWelcomeEmailJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @OA\Schema(
@@ -82,6 +84,11 @@ class AuthController extends Controller
         $user = User::create($data);
 
         $registrationToken = $user->createToken('registration_token', ['registration']);
+
+        // Log::info('Dispatching SendWelcomeEmailJob for user: ' . $user->email);
+        // dispatch(new SendWelcomeEmailJob($user));
+        // Log::info('SendWelcomeEmailJob dispatched.');
+        SendWelcomeEmailJob::dispatch($user);
 
         $userResource = new UserResource($user);
         return ApiResponse::success(
