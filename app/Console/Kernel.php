@@ -12,6 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('app:send-welcome-email')
+            ->monthly()
+            ->appendOutputTo(storage_path('logs/email_sending.log'));
         // $schedule->command('inspire')->hourly();
     }
 
