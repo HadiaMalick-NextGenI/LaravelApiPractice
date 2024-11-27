@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Resources\V1\UserResource;
+use App\Jobs\LogActivityJob;
 use App\Jobs\SendWelcomeEmailJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
 
 /**
  * @OA\Schema(
@@ -87,7 +89,13 @@ class AuthController extends Controller
         // Log::info('Dispatching SendWelcomeEmailJob for user: ' . $user->email);
         // dispatch(new SendWelcomeEmailJob($user));
         // Log::info('SendWelcomeEmailJob dispatched.');
-        SendWelcomeEmailJob::dispatch($user);
+        
+        //SendWelcomeEmailJob::dispatchAfterResponse($user);
+
+        Bus::chain([
+            new SendWelcomeEmailJob($user),
+            new LogActivityJob($user),
+        ])->dispatch();
 
         $userResource = new UserResource($user);
         return ApiResponse::success(

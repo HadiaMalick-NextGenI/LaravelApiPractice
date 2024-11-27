@@ -8,8 +8,14 @@ use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\V1\PostCollection;
 use App\Http\Resources\V1\PostResource;
+use App\Jobs\SendNewBlogEmailJob;
 use App\Models\Post;
+use App\Models\Subscriber;
+use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 /**
  * @OA\Schema(
@@ -124,22 +130,45 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request)
     {
-        $user_id = Auth::user()->id;
-        $img = $request->image;
-        $path = public_path(). '/uploads';
-        $imageName = $this->uploadImage($img, $path);
+        try{
+            $user_id = Auth::user()->id;
+            $img = $request->image;
+            $path = public_path(). '/uploads';
+            $imageName = $this->uploadImage($img, $path);
 
-        $post = Post::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'image' => $imageName,
-            'is_published' => $request->is_published,
-            'user_id' => $user_id,
-        ]);
+            $post = Post::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'image' => $imageName,
+                'is_published' => $request->is_published,
+                'user_id' => $user_id,
+            ]);
 
-        $postResource = new PostResource($post);
+            $subscribers = Subscriber::all();
 
-        return ApiResponse::success( data: $postResource , code: 201, message:"Post created successfully!");
+            $batch = Bus::batch([])
+                ->then(function () {
+                    Log::info('Batch successful!');
+                })
+                ->catch(function (Throwable $e) {
+                    Log::error('Batch failed: ' . $e->getMessage());
+                })
+                ->finally(function () {
+                    // Always executed, success or failure
+                });
+
+            foreach ($subscribers as $subscriber) {
+                $batch->add(new SendNewBlogEmailJob($subscriber, $post));
+            }
+
+            $batch->dispatch();
+
+            $postResource = new PostResource($post);
+
+            return ApiResponse::success( data: $postResource , code: 201, message:"Post created successfully!");
+        }catch(Exception $e){
+            Log::error('General Error: ' . $e->getMessage());
+        }
     }
 
     /**
