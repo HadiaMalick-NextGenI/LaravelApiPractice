@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\JsonPlaceholderController;
+use App\Http\Controllers\Api\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('/json/posts', [JsonPlaceholderController::class, 'createPost']);
     Route::put('/json/posts/{post}', [JsonPlaceholderController::class, 'updatePost']);
     Route::delete('json/posts/{post}', [JsonPlaceholderController::class, 'deletePost']);
+
+    Route::get('weather/current', [WeatherController::class, 'getCurrentWeather']);
+    Route::get('/weather/multiple', [WeatherController::class, 'getMultipleWeather']);
 });
 
 // Route::fallback(function () {
