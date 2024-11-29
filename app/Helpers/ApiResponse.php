@@ -3,12 +3,12 @@
 namespace App\Helpers;
 
 class ApiResponse{
-    public static function success($data, $code = 200, $message = "", $metadata = [], $links = [], $token = null, $token_type = null){
+    public static function success($code = 200, $message = "", $data, $metadata = [], $links = [], $token = null, $token_type = null){
 
         $response = [
             'status' => 'success',
-            'data' => $data,
             'message' => $message,
+            'data' => $data,
             'metadata' => $metadata,
             'links' => $links
         ];
