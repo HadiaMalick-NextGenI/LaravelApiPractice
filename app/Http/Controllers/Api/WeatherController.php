@@ -24,7 +24,7 @@ class WeatherController extends Controller
 
     public function getMultipleWeather(Request $request)
     {
-        $locations = $request->query('locations', ['London', 'New York', 'Tokyo']); // Default to a few locations
+        $locations = $request->query('locations', ['London', 'New York', 'Tokyo']);
         $data = $this->weatherService->getMultipleWeatherData($locations);
 
         return response()->json($data);
