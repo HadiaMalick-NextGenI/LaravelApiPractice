@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V2\AdminController;
 use App\Http\Controllers\Api\V2\AuthController;
 use App\Http\Controllers\Api\V2\PostController;
 use App\Http\Controllers\Api\V2\SubscriberController;
@@ -31,4 +32,11 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('profile', [UserController::class, 'insertProfileData']);
     Route::post('/subscribe', [SubscriberController::class, 'subscribe']);
     Route::post('/unsubscribe', [SubscriberController::class, 'unsubscribe']);
+});
+
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [AdminController::class, 'index']);
+    Route::get('/users/{id}', [AdminController::class, 'show']);
+    Route::post('/users/{id}/assign-role', [AdminController::class, 'assignRole']);
+    Route::delete('/users/{id}', [AdminController::class, 'destroy']);
 });

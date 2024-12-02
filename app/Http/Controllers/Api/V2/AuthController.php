@@ -82,6 +82,8 @@ class AuthController extends Controller
         
         $user = User::create($data);
 
+        $user->assignRole('user');
+        
         $registrationToken = $user->createToken('registration_token', ['registration']);
 
         $userResource = new UserResource($user);
@@ -149,6 +151,7 @@ class AuthController extends Controller
 
             $userResource = new UserResource($authUser);
             return ApiResponse::success(
+                code: 200,
                 data: $userResource,
                 message:"Login successful!",
                 token: $token,

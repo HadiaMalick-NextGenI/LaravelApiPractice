@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
 
     protected $routeMiddleware = [
         'api_version' => \App\Http\Middleware\APIversion::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
 }
