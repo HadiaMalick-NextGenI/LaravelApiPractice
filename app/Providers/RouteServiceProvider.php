@@ -44,7 +44,7 @@ class RouteServiceProvider extends ServiceProvider
                 'namespace'  => "{$this->apiNamespace}\V1",
                 'prefix'     => 'api/v1',
             ], function ($router) {
-                require base_path('routes/api_v1.php');
+                require base_path('routes/v1/api.php');
             });
 
             Route::group([
@@ -52,7 +52,7 @@ class RouteServiceProvider extends ServiceProvider
                 'namespace'  => "{$this->apiNamespace}\V2",
                 'prefix'     => 'api/v2',
             ], function ($router) {
-                require base_path('routes/api_v2.php');
+                require base_path('routes/v2/api.php');
             });
         });
     }
